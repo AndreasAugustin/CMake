@@ -20,10 +20,20 @@ if(${PROJECT_NAME}_CMAKE_DEBUG)
             "${PROJECT_NAME} starting")
 endif()
 
-# uncomment for using the example
+# uncomment for using the example ----------------------------------------------
 ## example for including other cmake files
 #set(I_AM_AN_OPTION ON CACHE BOOL "Set option of child.cmake from parent scope" FORCE)
 #include(${CMAKE_CURRENT_LIST_DIR}/child.cmake)
+# ------------------------------------------------------------------------------
 
-#set(SOURCE_FILES main.cpp)
-#add_executable(CMake ${SOURCE_FILES})
+
+add_library(calc ${CMAKE_CURRENT_LIST_DIR}/lib/src/calc.cpp)
+
+target_include_directories(calc
+        PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/lib/include>
+        PUBLIC $<INSTALL_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/lib/include>)
+
+add_executable(example ${CMAKE_CURRENT_LIST_DIR}/main.cpp)
+target_link_libraries(example
+        PRIVATE $<BUILD_INTERFACE:calc>
+        PUBLIC $<INSTALL_INTERFACE:calc>)
